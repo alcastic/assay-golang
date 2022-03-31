@@ -9,6 +9,9 @@ import (
 )
 
 func fetchBody(url string) ([]byte, error) {
+	st := time.Now()
+	defer func() { fmt.Printf("url: %v, fetched: %v\n", url, time.Since(st)) }()
+
 	res, err := http.Get(url)
 	if err != nil {
 		return nil, err
@@ -37,10 +40,8 @@ func main() {
 	}
 	for _, url := range urls {
 		wg.Add(1)
-		st := time.Now()
 		go func(url string) {
 			fetchBody(url)
-			fmt.Printf("url: %v, fetched: %v\n", url, time.Since(st))
 			wg.Done()
 		}(url)
 	}

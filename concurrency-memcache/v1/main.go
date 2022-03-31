@@ -8,6 +8,9 @@ import (
 )
 
 func fetchBody(url string) ([]byte, error) {
+	st := time.Now()
+	defer func() { fmt.Printf("url: %v, fetched: %v\n", url, time.Since(st)) }()
+
 	res, err := http.Get(url)
 	if err != nil {
 		return nil, err
@@ -34,9 +37,7 @@ func main() {
 		"https://gopl.io",
 	}
 	for _, url := range urls {
-		st := time.Now()
 		fetchBody(url)
-		fmt.Printf("url: %v, fetched: %v\n", url, time.Since(st))
 	}
 	fmt.Printf("End - elapse: %v\n", time.Since(startTime))
 }

@@ -7,7 +7,7 @@ import (
 	"sync"
 	"time"
 
-	"memcache.cl/memo"
+	"github.com/alcastic/assay-golang/tree/main/concurrency-memcache/v3/memo"
 )
 
 func fetchBody(url string) ([]byte, error) {
@@ -27,6 +27,10 @@ func fetchBodyAdapter(url string) (interface{}, error) {
 	return fetchBody(url)
 }
 
+/*
+ * This version is an improvement, but still fetching some urls more than one times.
+ * Powerfull computer may fetch all sample urls all times.
+ */
 func main() {
 	startTime := time.Now()
 	var wg sync.WaitGroup
@@ -46,13 +50,12 @@ func main() {
 
 	for _, url := range urls {
 		wg.Add(1)
-		st := time.Now()
 		go func(url string) {
 			mc.Call(url)
-			fmt.Printf("url: %v, fetched: %v\n", url, time.Since(st))
 			wg.Done()
 		}(url)
 	}
 	wg.Wait()
+
 	fmt.Printf("End - elapse: %v\n", time.Since(startTime))
 }
