@@ -38,16 +38,16 @@ type MemCache struct {
 	requests chan request
 }
 
-func (m *MemCache) monitor() {
+func (mc *MemCache) monitor() {
 	cache := make(map[string]*entry)
-	for req := range m.requests {
+	for req := range mc.requests {
 		st := time.Now()
 		cached := false
 		ent := cache[req.url]
 		if ent == nil {
 			ent = &entry{ready: make(chan struct{})}
 			cache[req.url] = ent
-			go ent.call(m.fetch, req.url)
+			go ent.call(mc.fetch, req.url)
 		} else {
 			cached = true
 		}
